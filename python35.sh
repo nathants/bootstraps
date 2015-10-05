@@ -14,4 +14,4 @@ tar xf *
 cd *
 ./configure
 make
-make install
+sudo make install
