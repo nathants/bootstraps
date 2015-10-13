@@ -2,7 +2,7 @@
 set -e
 
 sudo apt-get update
-sudo apt-get install build-essential
+sudo apt-get install build-essential python-virtualenv
 sudo apt-get build-dep -y python3.4
 path=/opt/python35
 sudo rm -rf ${path}
