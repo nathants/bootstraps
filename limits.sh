@@ -2,16 +2,14 @@
 set -e
 
 set_opt() {
-    opt=$1
-    dst=$2
-    if grep "$opt" $dst >/dev/null; then
-        echo $dst already has \"$opt\"
-    else
-        echo "$opt" | sudo tee -a $dst >/dev/null
-        echo added \"$opt\" to $dst
-    fi
+    dst=$1
+    head=$2
+    tail=$3
+    sudo sed -i "/${head}/d" ${dst}
+    sudo sed -i "$ a ${head} ${tail}" ${dst}
+    echo updated \"${head} ${tail}\" in ${dst}
 }
 
-set_opt 'fs.file-max = 120000' /etc/sysctl.conf
-set_opt 'fs.inotify.max_user_watches = 120000' /etc/sysctl.conf
-set_opt '* - nofile 120000' /etc/security/limits.conf
+set_opt /etc/sysctl.conf 'fs.file-max' '= 120000'
+set_opt /etc/sysctl.conf 'fs.inotify.max_user_watches' '= 120000'
+set_opt /etc/security/limits.conf '* - nofile' '120000'
