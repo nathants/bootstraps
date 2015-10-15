@@ -16,15 +16,15 @@ set_opt ${path} discovery.zen.minimum_master_nodes: 2
 set_opt ${path} discovery.zen.ping.multicast.enabled: true
 
 set_opt ${path} threadpool.search.type: fixed
-set_opt ${path} threadpool.search.size: 10
+set_opt ${path} threadpool.search.size: 4
 set_opt ${path} threadpool.search.queue_size: 100
 
 set_opt ${path} threadpool.bulk.type: fixed
-set_opt ${path} threadpool.bulk.size: 30
+set_opt ${path} threadpool.bulk.size: 6
 set_opt ${path} threadpool.bulk.queue_size: 300
 
 set_opt ${path} threadpool.index.type: fixed
-set_opt ${path} threadpool.index.size: 10
+set_opt ${path} threadpool.index.size: 4
 set_opt ${path} threadpool.index.queue_size: 100
 
 set_opt ${path} indices.memory.index_buffer_size: 50%
