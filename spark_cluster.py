@@ -1,3 +1,4 @@
+# requires https://github.com/nathants/py-aws
 import aws.ec2
 import util.log
 
