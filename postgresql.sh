@@ -2,7 +2,7 @@
 set -e
 
 version=$1
-echo install postgresql ${version}
+[ -z "$version" ] && echo must specify version && exit 1
 
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
