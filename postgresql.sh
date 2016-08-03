@@ -15,5 +15,3 @@ local all all trust
 host all all 127.0.0.1/32 trust
 host all all ::1/128 trust
 " | sudo tee /etc/postgresql/${version}/main/pg_hba.conf
-sudo -u postgres createuser --superuser $(whoami)
-sudo -u postgres createdb $(whoami)
