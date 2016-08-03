@@ -11,7 +11,6 @@ sudo apt-get install -y postgresql-${version}
 echo "
 # wide open on all ports
 local all all trust
-local all all trust
-host all all 127.0.0.1/32 trust
-host all all ::1/128 trust
+host all all 0.0.0.0/0 trust
 " | sudo tee /etc/postgresql/${version}/main/pg_hba.conf
+echo "listen_addresses='*'" | sudo tee -a /etc/postgresql/${version}/main/postgresql.conf
