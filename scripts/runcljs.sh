@@ -9,7 +9,7 @@ sudo apt-get update
 sudo apt-get -y install python-pip git
 sudo pip install edn_format
 
-git clone https://github.com/nathants/cljs
-sudo mv cljs/bin/.lein cljs/bin/* /usr/bin
+git clone https://github.com/nathants/runclj
+sudo mv runclj/bin/.lein runclj/bin/* /usr/bin
 
-cljs ./cljs/examples/shell.cljs
+cljs ./runclj/examples/shell.cljs
