@@ -12,11 +12,11 @@ uncommented_config() {
 [ -f $dst ] || (sudo touch $dst && echo created: $dst)
 if [ -z "$(uncommented_config)" ]; then
     echo  appended to config: ${dst}
-    echo "$head $tail" | sudo tee -a ${dst} >/dev/null
+    echo "${head}${tail}" | sudo tee -a ${dst} >/dev/null
     echo "" new: "$(uncommented_config)"
 else
     echo update config: ${dst}
     echo "" old: "$(uncommented_config)"
-    sudo sed -i "s:${head_escaped}.*:${head_escaped} ${tail_escaped}:" ${dst}
+    sudo sed -i "s:${head_escaped}.*:${head_escaped}${tail_escaped}:" ${dst}
     echo "" new: "$(uncommented_config)"
 fi
