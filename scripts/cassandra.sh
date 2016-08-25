@@ -23,8 +23,9 @@ bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'cluster_name:' " $nam
 bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'num_tokens:' ' 256'
 bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml '- seeds:' " $seeds"
 bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'auto_bootstrap:' ' false'
-bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'rpc_address:' ' 0.0.0.0'
+bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'broadcast_rpc_address:' " localhost"
 bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'listen_address:' " $(ifconfig eth0 |grep 'inet addr'|cut -d: -f2|cut -d' ' -f1)"
+bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'rpc_address:' " 0.0.0.0"
 
 sudo service cassandra start
 
@@ -32,6 +33,15 @@ sudo service cassandra start
 if [ "$ops_addr" = "$(ifconfig eth0 |grep 'inet addr'|cut -d: -f2|cut -d' ' -f1)" ]; then
     sudo apt-get install -y opscenter
     sudo service opscenterd start
+    curl -X POST 0.0.0.0:8888/cluster-configs -d '{
+    "cassandra": {
+      "seed_hosts": "$seeds"
+    },
+    "cassandra_metrics": {},
+    "jmx": {
+      "port": "7199"
+    }
+    }'
 fi
 
 sudo apt-get install -y datastax-agent
