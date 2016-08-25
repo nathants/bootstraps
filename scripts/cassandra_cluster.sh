@@ -29,7 +29,7 @@ seeds=$(echo "$ips" | head -n3 | tr '\n' ', '| sed 's:.$::')
 
 ec2 ssh $ids -yc "
 
-curl -L https://github.com/nathants/bootstraps/tarball/9b94a3c6dc359ae7039139bb61442e14b276051a | tar zx
+curl -L https://github.com/nathants/bootstraps/tarball/0a963cd660a2b519e94ee2751cf7794f3a07d3ef | tar zx
 mv nathants-bootstraps* bootstraps
 bash bootstraps/scripts/cassandra.sh $version $cluster_name $seeds $ops_addr
 
