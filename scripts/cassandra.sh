@@ -29,22 +29,17 @@ bash $bootstraps/set_opt.sh /etc/cassandra/cassandra.yaml 'rpc_address:' " 0.0.0
 
 sudo service cassandra start
 
+sudo apt-get install -y datastax-agent
+sudo service datastax-agent stop
+bash bootstraps/scripts/set_opt.sh /var/lib/datastax-agent/conf/address.yaml stomp_interface: " $ops_addr"
+sudo service datastax-agent start
 
 if [ "$ops_addr" = "$(ifconfig eth0 |grep 'inet addr'|cut -d: -f2|cut -d' ' -f1)" ]; then
     sudo apt-get install -y opscenter
     sudo service opscenterd start
     curl -X POST 0.0.0.0:8888/cluster-configs -d '{
-    "cassandra": {
-      "seed_hosts": "$seeds"
-    },
-    "cassandra_metrics": {},
-    "jmx": {
-      "port": "7199"
-    }
+        "cassandra": {"seed_hosts": "$seeds"},
+        "cassandra_metrics": {},
+        "jmx": {"port": "7199"}
     }'
 fi
-
-sudo apt-get install -y datastax-agent
-sudo service datastax-agent stop
-bash bootstraps/scripts/set_opt.sh /var/lib/datastax-agent/conf/address.yaml stomp_interface: " $ops_addr"
-sudo service datastax-agent start
