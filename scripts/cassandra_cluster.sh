@@ -31,3 +31,7 @@ curl -L https://github.com/nathants/bootstraps/tarball/85bfc979230271bc18d178c9c
 mv nathants-bootstraps* bootstraps
 bash bootstraps/scripts/cassandra.sh $version $cluster_name $seeds
 "
+
+# TODO add something like in elasticsearch_cluster.sh, that checks
+# that the correct number of nodes came up, and that they all can see
+# each other

@@ -29,15 +29,17 @@ ids=$(ec2 new $name \
           --ami trusty \
           --role ec2-read-only)
 
+echo tagged es-cluster=${cluster_uuid}
+
 ec2 ssh $ids -yc "
 curl -L https://github.com/nathants/bootstraps/tarball/2f9f75b9a4603d1e79009805a1e1dd365f7353cb | tar zx
 mv nathants-bootstraps* bootstraps
 bash bootstraps/scripts/elasticsearch.sh $version $cluster_name $cluster_uuid
 "
 
-ips=$(ec2 ip $name)
+ips=$(ec2 ip es-cluster=$cluster_uuid)
 for i in {1..11}; do
-    [ $i = 11 ] && echo failed after 10 tries && false
+    [ $i = 11 ] && echo ERROR all nodes never came up && false
     num_nodes_should_exist=$(for ip in $ips; do echo 3; done)
     num_nodes_exist=$(for ip in $ips; do curl $ip:9200/_cluster/state 2>/dev/null|jq '.nodes|length'; done)
     echo wanted to see: $num_nodes_should_exist
@@ -48,4 +50,6 @@ done
 
 min_master=$(($num_instances/2+1))
 echo set min master nodes to: $min_master
-curl -XPUT localhost:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}\"
+for ip in $ips; do
+    curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}"
+done
