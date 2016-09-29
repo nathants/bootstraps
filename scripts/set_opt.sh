@@ -7,7 +7,7 @@ tail=$3
 head_escaped=$(echo "$head" | sed -r 's/([:\/\*\+\?])/\\\1/')
 tail_escaped=$(echo "$tail" | sed -r 's/([:\/\*\+\?])/\\\1/')
 uncommented_config() {
-    cat ${dst} | grep -vP '^ *[#\/\;]' |  sed -n -- "/^\s*${head_escaped}/p"
+    sudo cat ${dst} | grep -vP '^ *[#\/\;]' |  sed -n -- "/^\s*${head_escaped}/p"
 }
 [ "$(uncommented_config | wc -l)" -le "1" ] || (echo ERROR mulptile matches! $dst $head; uncommented_config; exit 1)
 [ -f $dst ] || (sudo touch $dst && echo created: $dst)

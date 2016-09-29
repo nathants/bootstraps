@@ -1,6 +1,5 @@
 #!/bin/bash
 # requires https://github.com/nathants/py-aws
-# requires https://github.com/nathants/py-util
 set -e
 
 version=$1
@@ -17,7 +16,12 @@ fi
 
 name="cassandra-${cluster_name}"
 
-ids=$(ec2 new $name --type ${ec2_type} ${spot_price} --gigs ${ec2_gigs} --ami trusty --num ${num_instances})
+ids=$(ec2 new $name \
+          ${spot_price} \
+          --type ${ec2_type} \
+          --gigs ${ec2_gigs} \
+          --ami trusty \
+          --num ${num_instances})
 ips=$(ec2 ssh $ids -qyc "ifconfig eth0 |grep 'inet addr'|cut -d: -f2|cut -d' ' -f1")
 
 seeds=$(echo "$ips" | head -n3 | tr '\n' ', '| sed 's:.$::')

@@ -1,5 +1,5 @@
 # requires https://github.com/nathants/py-aws
-# requires https://github.com/nathants/py-util
+# TODO redo this in bash. nothing fancy is happening here, no need for python
 import aws.ec2
 import util.log
 
