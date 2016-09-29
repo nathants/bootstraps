@@ -30,7 +30,7 @@ ids=$(ec2 new $name \
           --role ec2-read-only)
 
 ec2 ssh $ids -yc "
-curl -L https://github.com/nathants/bootstraps/tarball/1eeaa3196ecebc3d6a84ea48a9f7a8defe3b4487 | tar zx
+curl -L https://github.com/nathants/bootstraps/tarball/2f9f75b9a4603d1e79009805a1e1dd365f7353cb | tar zx
 mv nathants-bootstraps* bootstraps
 bash bootstraps/scripts/elasticsearch.sh $version $cluster_name $cluster_uuid
 "
