@@ -27,9 +27,7 @@ ips=$(ec2 ssh $ids -qyc "ifconfig eth0 |grep 'inet addr'|cut -d: -f2|cut -d' ' -
 seeds=$(echo "$ips" | head -n3 | tr '\n' ', '| sed 's:.$::')
 
 ec2 ssh $ids -yc "
-
 curl -L https://github.com/nathants/bootstraps/tarball/85bfc979230271bc18d178c9ca3a21817b1dfa45 | tar zx
 mv nathants-bootstraps* bootstraps
 bash bootstraps/scripts/cassandra.sh $version $cluster_name $seeds
-
 "

@@ -1,6 +1,7 @@
 #!/bin/bash
 # requires https://github.com/nathants/py-aws
 # requires an ec2 iam role with ec2 read access named: ec2-read-only
+# requires https://stedolan.github.io/jq/
 set -e
 
 version=$1
@@ -29,7 +30,22 @@ ids=$(ec2 new $name \
           --role ec2-read-only)
 
 ec2 ssh $ids -yc "
-curl -L https://github.com/nathants/bootstraps/tarball/538f1a7beac1edebd052c59dacc9d041c7f9be64 | tar zx
+curl -L https://github.com/nathants/bootstraps/tarball/1eeaa3196ecebc3d6a84ea48a9f7a8defe3b4487 | tar zx
 mv nathants-bootstraps* bootstraps
 bash bootstraps/scripts/elasticsearch.sh $version $cluster_name $cluster_uuid
 "
+
+ips=$(ec2 ip $name)
+for i in {1..11}; do
+    [ $i = 11 ] && echo failed after 10 tries && false
+    num_nodes_should_exist=$(for ip in $ips; do echo 3; done)
+    num_nodes_exist=$(for ip in $ips; do curl $ip:9200/_cluster/state 2>/dev/null|jq '.nodes|length'; done)
+    echo wanted to see: $num_nodes_should_exist
+    echo actually saw: $num_nodes_exist
+    [ "$num_nodes_should_exist" = "$num_nodes_exist" ] && echo all nodes up && break
+    sleep 10
+done
+
+min_master=$(($num_instances/2+1))
+echo set min master nodes to: $min_master
+curl -XPUT localhost:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}\"
