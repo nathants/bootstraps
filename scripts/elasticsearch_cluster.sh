@@ -40,7 +40,7 @@ bash bootstraps/scripts/elasticsearch.sh $version $cluster_name $cluster_uuid
 ips=$(ec2 ip es-cluster=$cluster_uuid)
 for i in {1..11}; do
     [ $i = 11 ] && echo ERROR all nodes never came up && false
-    num_nodes_should_exist=$(for ip in $ips; do echo 3; done)
+    num_nodes_should_exist=$(for ip in $ips; do echo ${num_instances}; done)
     num_nodes_exist=$(for ip in $ips; do curl $ip:9200/_cluster/state 2>/dev/null|jq '.nodes|length'; done)
     echo wanted to see: $num_nodes_should_exist
     echo actually saw: $num_nodes_exist

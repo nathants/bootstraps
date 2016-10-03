@@ -19,7 +19,6 @@ sudo service elasticsearch stop
 
 heap=$(free -m|head -2|tail -1|awk '{print $2}'|python2.7 -c 'import sys; print int(int(sys.stdin.read()) * .5)')
 region=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone/ 2>/dev/null|sed s:.$::)
-security_group=$(curl http://169.254.169.254/latest/meta-data/security-groups/ 2>/dev/null|head -n1)
 
 bash $bootstraps/set_opt.sh /etc/default/elasticsearch 'ES_HEAP_SIZE=' "${heap}m"
 bash $bootstraps/set_opt.sh /etc/default/elasticsearch 'MAX_OPEN_FILES=' '120000'
