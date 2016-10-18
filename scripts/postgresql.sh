@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eou pipefail
+set -eu
 
 version=$1
 [ -z "$version" ] && echo must specify version && exit 1

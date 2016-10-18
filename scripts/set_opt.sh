@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eou pipefail
+set -eu
 
 dst=$1
 head=$2

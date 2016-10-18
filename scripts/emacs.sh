@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eou pipefail
+set -eu
 mkdir -p ~/opt
 cd ~/opt
 sudo apt-get install -y build-essential wget libncurses5-dev libgnutls-dev

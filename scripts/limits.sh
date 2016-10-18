@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eou pipefail
+set -eu
 
 bootstraps=$(dirname $0)
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eou pipefail
+set -eu
 
 curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
 VERSION=node_6.x
