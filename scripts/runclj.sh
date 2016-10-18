@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eou pipefail
 
 bootstraps=$(dirname $0)
 bash ${bootstraps}/lein_java8.sh

@@ -2,7 +2,7 @@
 # requires https://github.com/nathants/py-aws
 # requires an ec2 iam role with ec2 read access named: ec2-read-only
 # requires https://stedolan.github.io/jq/
-set -e
+set -eou pipefail
 
 version=$1
 cluster_name=$2

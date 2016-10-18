@@ -1,6 +1,6 @@
 #!/bin/bash
 # requires https://github.com/nathants/py-aws
-set -e
+set -eou pipefail
 
 version=$1
 cluster_name=$2

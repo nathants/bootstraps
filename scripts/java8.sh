@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eou pipefail
 
 sudo apt-get update
 sudo apt-get install -y python-software-properties software-properties-common
