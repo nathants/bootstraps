@@ -1,23 +1,24 @@
 #!/bin/bash
 # requires https://github.com/nathants/py-aws
+# requires py-aws ec2 new to have defaults for --key, --vpc, and --sg. ec2 new -h will prompt you on first use, or edit ~/.*.aws.ec2.yaml
 # requires an ec2 iam role with ec2 read access named: ec2-read-only
 # requires https://stedolan.github.io/jq/
+
 set -eu
 
 # cd to this files parent, so we can access ./files
 cd $(dirname $0)
 source ./_prompt.sh
 
-version=$1
-cluster_name=$2
-num_new_instances=$3
+cluster_name=$1
+num_new_instances=$2
+ami=$3
 ec2_type=$4
 ec2_gigs=$5
+spot_price=$6
 
-if [ -z "$6" ]; then
-    spot_price=""
-else
-    spot_price="--spot $6"
+if [ ! -z "$spot_price" ]; then
+    spot_price="--spot $spot_price"
 fi
 
 num_existing_instances=$(ec2 ls cluster-name=$cluster_name|wc -l)
@@ -33,6 +34,7 @@ name="elasticsearch-${cluster_name}"
 ids=$(ec2 new $name \
           cluster-name=${cluster_name} \
           ${spot_price} \
+          --ami $ami \
           --type ${ec2_type} \
           --gigs ${ec2_gigs} \
           --num ${num_new_instances} \
@@ -40,18 +42,20 @@ ids=$(ec2 new $name \
           --role ec2-read-only)
 
 ec2 ssh $ids -yc "
-curl -L https://github.com/nathants/bootstraps/tarball/6e982ce9e365298db5df2f504d35f1e7fa1d3f6c | tar zx
-mv nathants-bootstraps* bootstraps
-bash bootstraps/scripts/elasticsearch.sh $version $cluster_name
-"
-
-ec2 ssh $ids -yc "
+rm -rf bootstraps && curl -L https://github.com/nathants/bootstraps/tarball/master | tar zx && mv nathants-bootstraps* bootstraps
+heap=$(free -m|head -2|tail -1|awk '{print $2}'|python2.7 -c 'import sys; print int(int(sys.stdin.read()) * .5)')
+region=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone/ 2>/dev/null|sed s:.$::)
+bash bootstraps/scripts/set_opt.sh /etc/default/elasticsearch 'ES_JAVA_OPTS=' "'-Xms${heap}m -Xmx${heap}m'"
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cloud.aws.region:' ' ${region}'
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cluster.name:' ' ${cluster_name}'
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.ec2.tag.cluster-name:' ' ${cluster_name}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.zen.minimum_master_nodes:' ' ${min_master}'
-bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_nodes:' ' ${num_new_instances}'
-bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.expected_nodes:' ' ${num_new_instances}'
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_nodes:' ' ${num_instances}'
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.expected_nodes:' ' ${num_instances}'
 sudo service elasticsearch restart
 "
 
+# wait for all nodes
 ips=$(ec2 ip cluster-name=$cluster_name)
 for i in {1..11}; do
     [ $i = 11 ] && echo ERROR all nodes never came up && false
@@ -63,7 +67,12 @@ for i in {1..11}; do
     sleep 10
 done
 
+# update min-master
 echo set min master nodes to: $min_master
 for ip in $ips; do
-    curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}"
+    curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {
+        \"discovery.zen.minimum_master_nodes\" : $min_master,
+        \"gateway.recover_after_nodes\": $num_instances,
+        \"gateway.expected_nodes\": $num_instances
+    }}"
 done
