@@ -15,11 +15,13 @@ sudo apt-get update
 sudo apt-get install -y elasticsearch=$version
 sudo service elasticsearch stop
 
+echo | sudo tee /etc/default/elasticsearch
 bash $bootstraps/set_opt.sh /etc/default/elasticsearch 'MAX_OPEN_FILES=' '120000'
 bash $bootstraps/set_opt.sh /etc/default/elasticsearch 'MAX_LOCKED_MEMORY=' 'unlimited'
 
-echo 262144 | sudo tee /proc/sys/vm/max_map_count
+bash $bootstraps/set_opt.sh /etc/sysctl.conf 'vm.max_map_count=' '262144'
 
+echo | sudo tee /etc/elasticsearch/elasticsearch.yml
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cluster.name:' " ${cluster_name}"
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'bootstrap.memory_lock:' ' true'
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'network.host:' ' 0.0.0.0'
