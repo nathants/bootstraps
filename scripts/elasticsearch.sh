@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eu
 
-cluster_name=$1
+version=$1
+cluster_name=$2
 
 bootstraps=$(dirname $0)
 bash $bootstraps/limits.sh
@@ -11,7 +12,7 @@ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee 
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 
 sudo apt-get update
-sudo apt-get install -y elasticsearch
+sudo apt-get install -y elasticsearch=$version
 sudo service elasticsearch stop
 
 heap=$(free -m|head -2|tail -1|awk '{print $2}'|python2.7 -c 'import sys; print int(int(sys.stdin.read()) * .5)')
@@ -22,7 +23,6 @@ bash $bootstraps/set_opt.sh /etc/default/elasticsearch 'MAX_OPEN_FILES=' '120000
 bash $bootstraps/set_opt.sh /etc/default/elasticsearch 'MAX_LOCKED_MEMORY=' 'unlimited'
 
 echo 262144 | sudo tee /proc/sys/vm/max_map_count
-
 
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cluster.name:' " ${cluster_name}"
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'bootstrap.memory_lock:' ' true'
