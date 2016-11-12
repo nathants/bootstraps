@@ -4,6 +4,10 @@
 # requires https://stedolan.github.io/jq/
 set -eu
 
+# cd to this files parent, so we can access ./files
+cd $(dirname $0)
+source ./_prompt.sh
+
 version=$1
 cluster_name=$2
 num_instances=$3
@@ -16,12 +20,14 @@ else
     spot_price="--spot $6"
 fi
 
+min_master=$(($num_instances/2+1))
+
+prompt version cluster_name num_instances ec2_type ec2_gigs spot_price min_master
+
 name="elasticsearch-${cluster_name}"
 
-cluster_uuid=$(cat /proc/sys/kernel/random/uuid)
-
 ids=$(ec2 new $name \
-          es-cluster=${cluster_uuid} \
+          cluster-name=${cluster_name} \
           ${spot_price} \
           --type ${ec2_type} \
           --gigs ${ec2_gigs} \
@@ -29,15 +35,20 @@ ids=$(ec2 new $name \
           --ami trusty \
           --role ec2-read-only)
 
-echo tagged es-cluster=${cluster_uuid}
-
 ec2 ssh $ids -yc "
-curl -L https://github.com/nathants/bootstraps/tarball/2f9f75b9a4603d1e79009805a1e1dd365f7353cb | tar zx
+curl -L https://github.com/nathants/bootstraps/tarball/6e982ce9e365298db5df2f504d35f1e7fa1d3f6c | tar zx
 mv nathants-bootstraps* bootstraps
-bash bootstraps/scripts/elasticsearch.sh $version $cluster_name $cluster_uuid
+bash bootstraps/scripts/elasticsearch.sh $version $cluster_name
 "
 
-ips=$(ec2 ip es-cluster=$cluster_uuid)
+ec2 ssh $ids -yc "
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.zen.minimum_master_nodes:' ' ${min_master}'
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_nodes:' ' ${num_instances}'
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.expected_nodes:' ' ${num_instances}'
+sudo service elasticsearch restart
+"
+
+ips=$(ec2 ip cluster-name=$cluster_name)
 for i in {1..11}; do
     [ $i = 11 ] && echo ERROR all nodes never came up && false
     num_nodes_should_exist=$(for ip in $ips; do echo ${num_instances}; done)
