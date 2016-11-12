@@ -21,45 +21,48 @@ if [ ! -z "$spot_price" ]; then
     spot_price="--spot $spot_price"
 fi
 
-num_existing_instances=$(ec2 ls cluster-name=$cluster_name|wc -l)
+num_existing_instances=$(ec2 ls -s running cluster-name=$cluster_name|wc -l)
 
 num_instances=$((num_new_instances + num_existing_instances))
 
 min_master=$(($num_instances / 2 + 1))
 
-prompt version cluster_name num_existing_instances num_new_instances ec2_type ec2_gigs spot_price min_master
+prompt ami cluster_name num_existing_instances num_new_instances num_instances ec2_type ec2_gigs spot_price min_master
 
 name="elasticsearch-${cluster_name}"
 
 ids=$(ec2 new $name \
-          cluster-name=${cluster_name} \
-          ${spot_price} \
+          cluster-name=$cluster_name \
+          $spot_price \
           --ami $ami \
-          --type ${ec2_type} \
-          --gigs ${ec2_gigs} \
-          --num ${num_new_instances} \
-          --ami trusty \
+          --type $ec2_type \
+          --gigs $ec2_gigs \
+          --num $num_new_instances \
           --role ec2-read-only)
 
-ec2 ssh $ids -yc "
+# update yml config cluster wide
+ec2 ssh cluster-name=$cluster_name -yc "
 rm -rf bootstraps && curl -L https://github.com/nathants/bootstraps/tarball/master | tar zx && mv nathants-bootstraps* bootstraps
-heap=$(free -m|head -2|tail -1|awk '{print $2}'|python2.7 -c 'import sys; print int(int(sys.stdin.read()) * .5)')
-region=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone/ 2>/dev/null|sed s:.$::)
-bash bootstraps/scripts/set_opt.sh /etc/default/elasticsearch 'ES_JAVA_OPTS=' "'-Xms${heap}m -Xmx${heap}m'"
-bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cloud.aws.region:' ' ${region}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cluster.name:' ' ${cluster_name}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.ec2.tag.cluster-name:' ' ${cluster_name}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.zen.minimum_master_nodes:' ' ${min_master}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_nodes:' ' ${num_instances}'
-bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.expected_nodes:' ' ${num_instances}'
-sudo service elasticsearch restart
 "
+
+# update and restart new nodes
+ec2 ssh $ids -yc - <<'EOF'
+heap=$(free -m|head -2|tail -1|awk '{print $2}'|python2.7 -c 'import sys; print int(int(sys.stdin.read()) * .5)')
+region=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone/ 2>/dev/null|sed s:.$::)
+bash bootstraps/scripts/set_opt.sh /etc/default/elasticsearch 'ES_JAVA_OPTS=' "'-Xms${heap}m -Xmx${heap}m'"
+bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cloud.aws.region:' " ${region}"
+sudo service elasticsearch restart
+EOF
 
 # wait for all nodes
 ips=$(ec2 ip cluster-name=$cluster_name)
 for i in {1..11}; do
     [ $i = 11 ] && echo ERROR all nodes never came up && false
-    num_nodes_should_exist=$(for ip in $ips; do echo ${num_new_instances}; done)
+    num_nodes_should_exist=$(for ip in $ips; do echo ${num_instances}; done)
     num_nodes_exist=$(for ip in $ips; do curl $ip:9200/_cluster/state 2>/dev/null|jq '.nodes|length'; done)
     echo wanted to see: $num_nodes_should_exist
     echo actually saw: $num_nodes_exist
@@ -67,12 +70,8 @@ for i in {1..11}; do
     sleep 10
 done
 
-# update min-master
-echo set min master nodes to: $min_master
+# update min-master cluster wide
+echo set min master to: $min_master
 for ip in $ips; do
-    curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {
-        \"discovery.zen.minimum_master_nodes\" : $min_master,
-        \"gateway.recover_after_nodes\": $num_instances,
-        \"gateway.expected_nodes\": $num_instances
-    }}"
+    echo $ip $(curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}" 2>/dev/null|| echo fail)
 done

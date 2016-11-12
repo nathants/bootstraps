@@ -27,6 +27,7 @@ bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'bootstrap.memo
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'network.host:' ' 0.0.0.0'
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.type:' ' ec2'
 bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cloud.node.auto_attributes:' ' true'
+bash $bootstraps/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_time:' ' 1m'
 
 yes | sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
 
