@@ -9,7 +9,7 @@
 # '
 #
 # usage:
-# bash scripts/make_ami.sh elasticsearch 'bash bootstraps/scripts/elasticsearch.sh 5.0.0 ami-cluster' $(pwd)
+# description=foo push_dir=$(pwd) bash scripts/make_ami.sh elasticsearch 'bash bootstraps/scripts/elasticsearch.sh 5.0.0 ami-cluster'
 #
 
 set -eu
@@ -17,13 +17,15 @@ set -eu
 # cd to this files parent, so we can access ./files
 source $(dirname $0)/_prompt.sh
 
-ami_name=$1
+name=$1
 remote_cmd=$2
-push_dir=${3:-''}
 
-prompt ami_name remote_cmd push_dir
+description=${description:-$name}
+push_dir=${push_dir:-''}
 
-id=$(ec2 new make-ami-$ami_name \
+prompt name description remote_cmd push_dir
+
+id=$(ec2 new make-ami-$name \
          type=new-ami \
          --type m3.medium \
          --gigs 8 \
@@ -35,7 +37,7 @@ fi
 
 ec2 ssh $id -yc "$remote_cmd"
 
-ami_id=$(ec2 ami $id --name $ami_name -y)
+ami_id=$(ec2 ami $id --name $name --description $description -y)
 
 ec2 rm $id -y
 
