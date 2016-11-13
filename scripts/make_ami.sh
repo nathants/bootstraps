@@ -22,8 +22,13 @@ remote_cmd=$2
 
 description=${description:-$name}
 push_dir=${push_dir:-''}
+tag=${tag:-''}
 
-prompt name description remote_cmd push_dir
+if [ ! -z "$tag" ]; then
+    tag="--tag $tag"
+fi
+
+prompt name description remote_cmd push_dir tag
 
 id=$(ec2 new make-ami-$name \
          type=new-ami \
@@ -37,7 +42,7 @@ fi
 
 ec2 ssh $id -yc "$remote_cmd"
 
-ami_id=$(ec2 ami $id --name $name --description $description -y)
+ami_id=$(ec2 ami $id --name $name --description $description $tag -y)
 
 ec2 rm $id -y
 
