@@ -47,16 +47,18 @@ bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cluster
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.ec2.tag.cluster-name:' ' ${cluster_name}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.zen.minimum_master_nodes:' ' ${min_master}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_nodes:' ' ${num_instances}'
-"
+" 1>&2
 
 # update and restart new nodes
-ec2 ssh $ids -yc - <<'EOF'
+cmd=$(cat <<'EOF'
 heap=$(free -m|head -2|tail -1|awk '{print $2}'|python2.7 -c 'import sys; print int(int(sys.stdin.read()) * .5)')
 region=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone/ 2>/dev/null|sed s:.$::)
 bash bootstraps/scripts/set_opt.sh /etc/default/elasticsearch 'ES_JAVA_OPTS=' "'-Xms${heap}m -Xmx${heap}m'"
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cloud.aws.region:' " ${region}"
 sudo service elasticsearch restart
 EOF
+)
+ec2 ssh $ids -yc "$cmd" 1>&2
 
 # wait for all nodes
 ips=$(ec2 ip cluster-name=$cluster_name)
@@ -71,10 +73,12 @@ for i in {1..21}; do
     echo actually saw colors: $colors
     [ "$colors" = "g" ] && [ "$num_nodes_should_exist" = "$num_nodes_exist" ] && echo all nodes up and green && break
     sleep 10
-done
+done 1>&2
 
 # update min-master cluster wide
-echo set min master to: $min_master
+echo set min master to: $min_master 1>&2
 for ip in $ips; do
     echo $ip $(curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}" 2>/dev/null|| echo fail)
-done
+done 1>&2
+
+echo $ids
