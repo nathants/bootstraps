@@ -60,13 +60,16 @@ EOF
 
 # wait for all nodes
 ips=$(ec2 ip cluster-name=$cluster_name)
-for i in {1..11}; do
-    [ $i = 11 ] && echo ERROR all nodes never came up && false
+for i in {1..21}; do
+    [ $i = 21 ] && echo ERROR all nodes never came up && false
     num_nodes_should_exist=$(for ip in $ips; do echo ${num_instances}; done)
     num_nodes_exist=$(for ip in $ips; do curl $ip:9200/_cluster/state 2>/dev/null|jq '.nodes|length'; done)
-    echo wanted to see: $num_nodes_should_exist
-    echo actually saw: $num_nodes_exist
-    [ "$num_nodes_should_exist" = "$num_nodes_exist" ] && echo all nodes up && break
+    colors=$(for ip in $ips; do echo $((curl $ip:9200/_cluster/health 2>/dev/null || echo '{"status": "failed"}') | jq '.status // "offline"' -r | head -c1); done | sort | uniq)
+    echo wanted to see nodes: $num_nodes_should_exist
+    echo actually saw nodes: $num_nodes_exist
+    echo wanted to see colors: g
+    echo actually saw colors: $colors
+    [ "$colors" = "g" ] && [ "$num_nodes_should_exist" = "$num_nodes_exist" ] && echo all nodes up and green && break
     sleep 10
 done
 
