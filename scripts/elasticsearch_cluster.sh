@@ -81,4 +81,4 @@ for ip in $ips; do
     echo $ip $(curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}" 2>/dev/null|| echo fail)
 done 1>&2
 
-echo $ids
+echo "$ids"
