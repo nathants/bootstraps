@@ -38,12 +38,12 @@ id=$(ec2 new make-ami-$name \
 
 if [ ! -z "$push_dir" ]; then
     ec2 push $push_dir . $id -y
-fi
+fi 1>&2
 
-ec2 ssh $id -yc "$remote_cmd"
+ec2 ssh $id -yc "$remote_cmd" 1>&2
 
 ami_id=$(ec2 ami $id --name $name --description $description $tag -y)
 
-ec2 rm $id -y
+ec2 rm $id -y 1>&2
 
 echo $ami_id
