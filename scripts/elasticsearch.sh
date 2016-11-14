@@ -12,7 +12,7 @@ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee 
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 
 sudo apt-get update
-sudo apt-get install -y elasticsearch=$version
+sudo apt-get install -y elasticsearch=$version jq
 sudo service elasticsearch stop
 
 echo | sudo tee /etc/default/elasticsearch
