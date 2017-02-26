@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+# TODO seems unusable. with a 16GB file of word,word,word\n, trying to wc -l gets IO errors. 16.04, kernel 4.4, 4.8, 4.10.1
+
 # setup nvme on an aws i3 instance
 
 (
