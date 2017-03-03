@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-# setup ena support ec2 instances on ubuntu xenial
+# setup ena support ec2 instances on ubuntu
 
 ethtool -i ens3|grep ena # assert that ena is available
 sudo apt-get update
@@ -26,3 +26,7 @@ sudo dkms build -m amzn-drivers -v 1.0.0
 sudo dkms install -m amzn-drivers -v 1.0.0
 sudo update-initramfs -c -k all
 modinfo ena|grep version # assert ena is available
+
+# fix xenial nvme bug: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1668129
+sudo cp /lib/udev/rules.d/40-vm-hotadd.rules /lib/udev/rules.d/40-vm-hotadd.rules.old
+sudo sed -r -i 's:(SUBSYSTEM=="memory"):#\1:' /lib/udev/rules.d/40-vm-hotadd.rules
