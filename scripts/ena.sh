@@ -3,7 +3,6 @@ set -eu
 
 # setup ena support ec2 instances on ubuntu
 
-ethtool -i ens3|grep ena # assert that ena is available
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y build-essential dkms git

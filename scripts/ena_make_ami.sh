@@ -3,7 +3,8 @@ set -eu
 
 cd $(dirname $0)
 
-id=$(ec2 new ena-ami --type i3.large --ami $(ec2 amis-ubuntu --ena|grep xenial|grep hvm-ssd|awk '{print $1}'))
+id=$(ec2 new ena-ami --type r4.large --ami xenial)
+
 ec2 ssh $id -yc ./ena.sh
 
 ec2 stop -y $id --wait
