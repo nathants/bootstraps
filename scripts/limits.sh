@@ -5,7 +5,7 @@ bootstraps=$(dirname $0)
 
 bash $bootstraps/set_opt.sh /etc/sysctl.conf 'fs.file-max' ' = 120000'
 bash $bootstraps/set_opt.sh /etc/sysctl.conf 'fs.inotify.max_user_watches' ' = 120000'
-bash $bootstraps/set_opt.sh /etc/sysctl.conf 'net.core.somaxconn' ' = 65535'
+bash $bootstraps/set_opt.sh /etc/sysctl.conf 'net.core.somaxconn' ' = 2048'
 
 bash $bootstraps/set_opt.sh /etc/security/limits.conf '* - nofile' ' 120000'
 bash $bootstraps/set_opt.sh /etc/security/limits.conf '* - memlock' ' unlimited'
