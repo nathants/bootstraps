@@ -10,8 +10,8 @@ mv -f lz4 /usr/local/bin
 
 # xxhash
 cd /tmp
-rm -rf Cyan4973*
-curl -L https://github.com/Cyan4973/xxHash/tarball/88c6ee1 | tar zx
-cd Cyan4973*
+rm -rf nathants*
+curl -L https://github.com/nathants/xxHash/tarball/fb1f4a4 | tar zx
+cd nathants*
 make
 mv -f xxhsum /usr/local/bin
