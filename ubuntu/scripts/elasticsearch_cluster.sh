@@ -47,7 +47,7 @@ bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cluster
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.ec2.tag.cluster-name:' ' ${cluster_name}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'discovery.zen.minimum_master_nodes:' ' ${min_master}'
 bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'gateway.recover_after_nodes:' ' ${num_instances}'
-" 1>&2
+" >&2
 
 # update and restart new nodes
 cmd=$(cat <<'EOF'
@@ -58,7 +58,7 @@ bash bootstraps/scripts/set_opt.sh /etc/elasticsearch/elasticsearch.yml 'cloud.a
 sudo service elasticsearch restart
 EOF
 )
-ec2 ssh $ids -yc "$cmd" 1>&2
+ec2 ssh $ids -yc "$cmd" >&2
 
 # wait for all nodes
 ips=$(ec2 ip cluster-name=$cluster_name)
@@ -73,12 +73,12 @@ for i in {1..21}; do
     echo actually saw colors: $colors
     [ "$colors" = "g" ] && [ "$num_nodes_should_exist" = "$num_nodes_exist" ] && echo all nodes up and green && break
     sleep 10
-done 1>&2
+done >&2
 
 # update min-master cluster wide
-echo set min master to: $min_master 1>&2
+echo set min master to: $min_master >&2
 for ip in $ips; do
     echo $ip $(curl -XPUT $ip:9200/_cluster/settings -d "{\"persistent\" : {\"discovery.zen.minimum_master_nodes\" : $min_master}}" 2>/dev/null|| echo fail)
-done 1>&2
+done >&2
 
 echo "$ids"
