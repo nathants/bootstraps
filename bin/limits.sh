@@ -8,7 +8,7 @@ bash $bootstraps/set_opt.sh /etc/sysctl.d/99-sysctl.conf 'fs.pipe-max-size' ' = 
 bash $bootstraps/set_opt.sh /etc/sysctl.d/99-sysctl.conf 'fs.file-max' ' = 120000'
 bash $bootstraps/set_opt.sh /etc/sysctl.d/99-sysctl.conf 'fs.inotify.max_user_watches' ' = 120000'
 bash $bootstraps/set_opt.sh /etc/sysctl.d/99-sysctl.conf 'kernel.pid_max' ' = 4194303'
-bash $bootstraps/set_opt.sh /etc/sysctl.d/99-sysctl.conf 'net.core.somaxconn' ' = 2048'
+bash $bootstraps/set_opt.sh /etc/sysctl.d/99-sysctl.conf 'net.core.somaxconn' ' = 8192'
 
 bash $bootstraps/set_opt.sh /etc/security/limits.conf '* - nofile' ' 120000'
 bash $bootstraps/set_opt.sh /etc/security/limits.conf '* - memlock' ' unlimited'
