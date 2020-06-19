@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xeuo pipefail
+set -euo pipefail
 
 if ! which set-opt &>/dev/null; then
     echo '
