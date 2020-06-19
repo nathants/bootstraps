@@ -53,7 +53,5 @@ else
 
     else
         echo config already valid: ${file}
-        echo "" current: "$(line $file)"
     fi
-
 fi
