@@ -52,6 +52,6 @@ else
         fi
 
     else
-        echo config already valid: ${file}
+        echo config already valid: ${file} "$(line $file)"
     fi
 fi
