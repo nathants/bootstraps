@@ -78,6 +78,12 @@ aws-ec2-ssh $id -yc "
 
 "
 
+aws-ec2-reboot $id -y
+
+sleep 15
+
+aws-ec2-wait-for-state $id -y
+
 ami=$(aws-ec2-ami $id -y --name normal)
 
 aws-ec2-rm -y $id
