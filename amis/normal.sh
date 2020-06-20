@@ -9,7 +9,7 @@ id=$(aws-ec2-new bake-ami \
         --spot 0 \
         --gigs 8)
 
-trap "aws-ec2-ls $id && aws-ec2-rm -y $id" EXIT
+trap "aws-ec2-ls -s running $id && aws-ec2-rm -y $id" EXIT
 
 packages='
     curl
