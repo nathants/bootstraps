@@ -3,11 +3,11 @@ set -euo pipefail
 
 bootstraps=$(dirname $0)
 
-id=$(aws-ec2-new bake-ami
-        --type i3en.large
-        --ami arch
-        --spot 0
-        --gigs 4)
+id=$(aws-ec2-new bake-ami \
+        --type i3en.large \
+        --ami arch \
+        --spot 0 \
+        --gigs 8)
 
 trap "aws-ec2-ls $id && aws-ec2-rm -y $id" EXIT
 
