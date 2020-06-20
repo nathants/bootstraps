@@ -13,9 +13,15 @@ trap "aws-ec2-ls $id && aws-ec2-rm -y $id" EXIT
 
 packages='
     curl
+    entr
+    gcc
+    git
     glances
     jq
     lz4
+    man
+    pypy3
+    python3
 '
 
 pips='
@@ -58,8 +64,8 @@ aws-ec2-ssh $id -yc "
 
     echo
     echo setup linux limits
-    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/bin/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null && sudo chmod +x /usr/local/bin/set-opt
-    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/bin/limits.sh | bash
+    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null && sudo chmod +x /usr/local/bin/set-opt
+    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/limits.sh | bash
 
     echo
     echo install s4 and bsv
