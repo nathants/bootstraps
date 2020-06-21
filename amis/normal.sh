@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-bootstraps=$(dirname $0)
-
 id=$(aws-ec2-new bake-ami \
         --type i3en.large \
         --ami arch \
@@ -17,26 +15,26 @@ packages='
     gcc
     git
     glances
+    htop
     jq
+    lsof
     lz4
     man
     pypy3
     python3
+    tree
+    vim
 '
 
 pips='
     argh
     awscli
     blessings
-    bokeh
     cffi
     hashin
     hypothesis
     ipdb
     ipython
-    matplotlib
-    numpy
-    pandas
     pytest
     pytest-xdist
     python-dateutil
@@ -48,7 +46,6 @@ pips='
     yq
     git+https://github.com/nathants/cffi-xxh3
     git+https://github.com/nathants/cli-aws
-    git+https://github.com/nathants/ptop
     git+https://github.com/nathants/py-pool
     git+https://github.com/nathants/py-shell
     git+https://github.com/nathants/py-util
@@ -68,24 +65,24 @@ aws-ec2-ssh $id -yc "
     curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/limits.sh | bash
 
     echo
-    echo install s4 and bsv
-    curl -s https://raw.githubusercontent.com/nathants/s4/master/scripts/install_arch.sh | bash
+    echo install pips
+    sudo python -m ensurepip
+    sudo python -m pip install -U pip wheel
+    sudo python -m pip install $(echo $pips) git+https://github.com/nathants/ptop numpy pandas bokeh matplotlib ipython ipdb
+
+    sudo pypy3 -m ensurepip
+    sudo pypy3 -m pip install -U pip wheel
+    sudo pypy3 -m pip install $(echo $pips)
 
     echo
-    echo install pips
-    sudo python -m pip install -U pip wheel
-    sudo python -m pip install $(echo $pips)
+    echo install s4 and bsv
+    curl -s https://raw.githubusercontent.com/nathants/s4/master/scripts/install_arch.sh | bash
 
 "
 
 aws-ec2-reboot $id -y
-
 sleep 15
-
 aws-ec2-wait-for-state $id -y
-
 ami=$(aws-ec2-ami $id -y --name normal)
-
 aws-ec2-rm -y $id
-
 echo build ami: $ami
