@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+if ! which aws-ec2-new &>/dev/null; then
+    echo fatal: need to install https://github.com/nathants/cli-aws
+    exit 1
+fi
+
 id=$(aws-ec2-new bake-ami \
         --type i3en.large \
         --ami arch \
