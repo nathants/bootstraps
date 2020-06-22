@@ -27,6 +27,7 @@ packages='
     man
     pypy3
     python3
+    rsync
     tree
     vim
 '
