@@ -25,6 +25,7 @@ packages='
     lsof
     lz4
     man
+    pv
     pypy3
     python3
     rsync
