@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if ! which set-opt &>/dev/null; then
-    echo 'fatal: no set-opt, download and chmod: curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/bin/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null && sudo chmod +x /usr/local/bin/set-opt'
+    echo 'fatal: no set-opt, download and chmod: curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null && sudo chmod +x /usr/local/bin/set-opt'
     exit 1
 fi
 
@@ -17,8 +17,10 @@ set-opt /etc/security/limits.conf '* - nofile' ' 120000'
 set-opt /etc/security/limits.conf '* - memlock' ' unlimited'
 set-opt /etc/security/limits.conf '* - nproc' ' 32768'
 set-opt /etc/security/limits.conf '* - as' ' unlimited'
+set-opt /etc/security/limits.conf '* hard core' ' 0'
 
 set-opt /etc/security/limits.conf 'root - nofile' ' 120000'
 set-opt /etc/security/limits.conf 'root - memlock' ' unlimited'
 set-opt /etc/security/limits.conf 'root - nproc' ' 32768'
 set-opt /etc/security/limits.conf 'root - as' ' unlimited'
+set-opt /etc/security/limits.conf 'root hard core' ' 0'
