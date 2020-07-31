@@ -2,8 +2,8 @@
 set -euo pipefail
 
 if ! which set-opt &>/dev/null; then
-    echo 'fatal: no set-opt, download and chmod: curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null && sudo chmod +x /usr/local/bin/set-opt'
-    exit 1
+    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null
+    sudo chmod +x /usr/local/bin/set-opt
 fi
 
 mkdir -p /etc/sysctl.d

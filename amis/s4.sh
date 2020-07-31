@@ -68,7 +68,6 @@ aws-ec2-ssh $id -yc "
 
     echo
     echo setup linux limits
-    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/set_opt.sh | sudo tee /usr/local/bin/set-opt >/dev/null && sudo chmod +x /usr/local/bin/set-opt
     curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/limits.sh | bash
 
     echo
