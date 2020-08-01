@@ -79,15 +79,11 @@ aws-ec2-ssh $id -yc "
     sudo pypy3 -m pip install -U pip wheel
     sudo pypy3 -m pip install $(echo $pips)
 
-    echo
-    echo install s4 and bsv
-    curl -s https://raw.githubusercontent.com/nathants/s4/master/scripts/install_archlinux.sh | bash
-
 "
 
 aws-ec2-reboot $id -y
 sleep 15
 aws-ec2-wait-for-state $id -y
-ami=$(aws-ec2-ami $id -y --name s4)
+ami=$(aws-ec2-ami $id -y --name basic)
 aws-ec2-rm -y $id
 echo build ami: $ami
