@@ -7,7 +7,7 @@ if ! which aws-ec2-new &>/dev/null; then
 fi
 
 id=$(aws-ec2-new bake-ami \
-        --type p3.2xlarge \
+        --type i3en.large \
         --ami arch \
         --spot 0 \
         --gigs 32)
@@ -25,6 +25,8 @@ packages='
 '
 
 pips='
+    boto3
+    py3nvml
     argh
     awscli
     glances
@@ -37,9 +39,11 @@ pips='
     pillow
     scikit-image
     scikit-learn
-    tensorboard
     torchvision
     tqdm
+    git+https://github.com/nathants/py-util
+    git+https://github.com/nathants/py-pool
+    git+https://github.com/nathants/py-shell
 '
 
 aws-ec2-ssh $id -yc "
