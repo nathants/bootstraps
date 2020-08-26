@@ -25,6 +25,8 @@ packages='
 '
 
 pips='
+    imgaug
+    imagecorruptions
     boto3
     py3nvml
     argh
@@ -58,6 +60,7 @@ aws-ec2-ssh $id -yc "
     sudo python -m ensurepip
     sudo python -m pip install -U pip wheel
     sudo python -m pip install $(echo $pips)
+    python -c 'import matplotlib.font_manager'
 
 "
 
