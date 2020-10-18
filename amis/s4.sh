@@ -81,7 +81,7 @@ aws-ec2-ssh $id -yc "
 
     echo
     echo install s4 and bsv
-    curl -s https://raw.githubusercontent.com/nathants/s4/master/scripts/install_archlinux.sh | bash
+    curl -s https://raw.githubusercontent.com/nathants/s4/go/scripts/install_archlinux.sh | bash
 
 "
 
