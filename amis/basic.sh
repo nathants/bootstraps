@@ -20,6 +20,7 @@ packages='
     gcc
     git
     glances
+    go
     htop
     jq
     lsof
