@@ -7,7 +7,7 @@ if ! which aws-ec2-new &>/dev/null; then
 fi
 
 id=$(aws-ec2-new bake-ami \
-        --type i3en.large \
+        --type z1d.xlarge \
         --ami arch \
         --spot 0 \
         --gigs 8)
@@ -20,6 +20,7 @@ packages='
     gcc
     git
     glances
+    htop
     go
     htop
     jq
@@ -37,21 +38,6 @@ packages='
 pips='
     argh
     awscli
-    blessings
-    cffi
-    hashin
-    hypothesis
-    ipdb
-    ipython
-    pytest
-    pytest-xdist
-    python-dateutil
-    pytz
-    requests
-    tornado
-    tox
-    virtualenv
-    yq
     git+https://github.com/nathants/cli-aws
     git+https://github.com/nathants/py-pool
     git+https://github.com/nathants/py-shell
@@ -62,8 +48,11 @@ pips='
 aws-ec2-ssh $id -yc "
 
     echo
-    echo install packages
+    echo upgrade packages
     sudo pacman -Syu --noconfirm --noprogress
+
+    echo
+    echo install packages
     sudo pacman -S --needed --noconfirm --noprogress $(echo $packages)
 
     echo
@@ -74,7 +63,7 @@ aws-ec2-ssh $id -yc "
     echo install pips
     sudo python -m ensurepip
     sudo python -m pip install -U pip wheel
-    sudo python -m pip install $(echo $pips) git+https://github.com/nathants/ptop numpy pandas bokeh matplotlib
+    sudo python -m pip install $(echo $pips) git+https://github.com/nathants/ptop
 
     sudo pypy3 -m ensurepip
     sudo pypy3 -m pip install -U pip wheel
