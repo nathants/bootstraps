@@ -9,6 +9,7 @@ fi
 id=$(aws-ec2-new bake-ami \
         --type z1d.xlarge \
         --ami arch \
+        --seconds-timeout 0 \
         --spot 0 \
         --gigs 8)
 
