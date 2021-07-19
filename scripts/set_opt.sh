@@ -13,8 +13,8 @@ file=$1
 prefix=$2
 suffix=$3
 
-head_escaped=$(echo "$prefix" | sed -r 's/([\:\/\*\+\?])/\\\1/g')
-tail_escaped=$(echo "$suffix" | sed -r 's/([\:\/\*\+\?])/\\\1/g')
+head_escaped=$(echo "$prefix" | sed -r 's/([\(\)\:\/\*\+\?])/\\\1/g')
+tail_escaped=$(echo "$suffix" | sed -r 's/([\(\)\:\/\*\+\?])/\\\1/g')
 
 line() {
     sudo cat $1 | grep -vP '^ *[#\/\;]' | sed -n -- "/^\s*${head_escaped}/p"
