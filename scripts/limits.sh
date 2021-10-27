@@ -6,14 +6,14 @@ if ! which set-opt &>/dev/null; then
     sudo chmod +x /usr/local/bin/set-opt
 fi
 
-mkdir -p /etc/sysctl.d
+sudo mkdir -p /etc/sysctl.d
 set-opt /etc/sysctl.d/99-sysctl.conf 'fs.pipe-max-size' ' = 5242880'
 set-opt /etc/sysctl.d/99-sysctl.conf 'fs.file-max' ' = 3240674'
 set-opt /etc/sysctl.d/99-sysctl.conf 'fs.inotify.max_user_watches' ' = 3240674'
 set-opt /etc/sysctl.d/99-sysctl.conf 'kernel.pid_max' ' = 4194303'
 set-opt /etc/sysctl.d/99-sysctl.conf 'net.core.somaxconn' ' = 8192'
 
-mkdir -p /etc/security
+sudo mkdir -p /etc/security
 set-opt /etc/security/limits.conf '* - nofile' ' 3240674'
 set-opt /etc/security/limits.conf '* - memlock' ' unlimited'
 set-opt /etc/security/limits.conf '* - nproc' ' 32768'
