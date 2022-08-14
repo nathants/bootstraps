@@ -1,3 +1,3 @@
 # bootstraps
 
-scripts for setting up vanilla linux
+scripts for setting up linux
