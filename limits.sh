@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if ! which set-opt &>/dev/null; then
-    curl -s https://raw.githubusercontent.com/nathants/bootstraps/master/scripts/set_opt.sh | /usr/bin/sudo tee /usr/bin/set-opt >/dev/null
+    curl --fail --no-progress-meter https://raw.githubusercontent.com/nathants/bootstraps/master/set_opt.sh | /usr/bin/sudo tee /usr/bin/set-opt >/dev/null
     /usr/bin/sudo chmod +x /usr/bin/set-opt
 fi
 
