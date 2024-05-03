@@ -17,7 +17,7 @@ head_escaped=$(echo "$prefix" | sed -r 's/([\(\)\:\/\*\+\?])/\\\1/g')
 tail_escaped=$(echo "$suffix" | sed -r 's/([\(\)\:\/\*\+\?])/\\\1/g')
 
 line() {
-    /usr/bin/sudo cat $1 | grep -vP '^ *[#\/\;]' | sed -n -- "/^\s*${head_escaped}/p"
+    sudo cat $1 | grep -vP '^ *[#\/\;]' | sed -n -- "/^\s*${head_escaped}/p"
 }
 
 if [ ! "$(line $file | wc -l)" -le "1" ]; then
@@ -27,13 +27,13 @@ if [ ! "$(line $file | wc -l)" -le "1" ]; then
 fi
 
 if [ ! -f $file ]; then
-    /usr/bin/sudo touch $file
+    sudo touch $file
     echo created: $file
 fi
 
 if [ -z "$(line $file)" ]; then
     echo appended to config: ${file}
-    echo "${prefix}${suffix}" | /usr/bin/sudo tee -a ${file} >/dev/null
+    echo "${prefix}${suffix}" | sudo tee -a ${file} >/dev/null
     echo "" new: "$(line $file)"
 else
     tmpfile=$(mktemp)
@@ -49,7 +49,7 @@ else
             echo update config: ${file}
             echo "" old: "$(line $file)"
             echo "" new: "$(line $tmpfile)"
-            cat $tmpfile | /usr/bin/sudo tee $file >/dev/null
+            cat $tmpfile | sudo tee $file >/dev/null
         fi
 
     else

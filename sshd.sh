@@ -2,11 +2,11 @@
 set -xeuo pipefail
 
 if ! which set-opt &>/dev/null; then
-    curl --fail --no-progress-meter https://raw.githubusercontent.com/nathants/bootstraps/master/set_opt.sh | /usr/bin/sudo tee /usr/bin/set-opt >/dev/null
-    /usr/bin/sudo chmod +x /usr/bin/set-opt
+    curl --fail --no-progress-meter https://raw.githubusercontent.com/nathants/bootstraps/master/set_opt.sh | sudo tee /usr/bin/set-opt >/dev/null
+    sudo chmod +x /usr/bin/set-opt
 fi
 
-/usr/bin/sudo mkdir -p /etc/ssh
+sudo mkdir -p /etc/ssh
 set-opt /etc/ssh/sshd_config UseDNS                   " no"
 set-opt /etc/ssh/sshd_config PasswordAuthentication   " no"
 set-opt /etc/ssh/sshd_config Compression              " no"
