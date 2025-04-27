@@ -24,3 +24,5 @@ set-opt /etc/security/limits.conf 'root - memlock ' 'unlimited'
 set-opt /etc/security/limits.conf 'root - nproc '   '32768'
 set-opt /etc/security/limits.conf 'root - as '      'unlimited'
 set-opt /etc/security/limits.conf 'root hard core ' '0'
+
+sudo sysctl --system # apply without reboot
