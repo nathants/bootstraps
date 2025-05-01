@@ -3,7 +3,7 @@ set -euo pipefail
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     echo idempotently ensure that a given line with prefix has suffix
-    echo usage: preview=y set-opt PREFIX SUFFIX
+    echo usage: preview=y set-opt FILE PREFIX SUFFIX
     echo usage: set-opt PREFIX SUFFIX
     echo usage: 'set-opt /tmp/my.conf "some.setting " "= 123"'
     echo note: make sure your prefix includes a space or some other seperator at the end
