@@ -2,7 +2,7 @@
 set -xeuo pipefail
 
 if ! which set-opt &>/dev/null; then
-    curl --fail --no-progress-meter https://raw.githubusercontent.com/nathants/bootstraps/master/set_opt.sh | sudo tee /usr/bin/set-opt >/dev/null
+    curl --fail --no-progress-meter https://raw.githubusercontent.com/nathants/bootstraps/280b3e39a5addca597538548dd9d3e3148a6c3cd/set_opt.sh | sudo tee /usr/bin/set-opt >/dev/null
     sudo chmod +x /usr/bin/set-opt
 fi
 
