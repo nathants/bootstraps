@@ -42,6 +42,15 @@ sudo apt install -y \
     uuid-runtime \
     pinentry-curses \
     gpg \
+    python3-pyqt5 \
+    libsdl2-compat-dev \
+    libsndfile1-dev \
+    libyaml-cpp-dev \
+    libgoogle-perftools-dev \
+    libpipewire-0.3-dev \
+    pipewire-bin \
+    pulseaudio-utils \
+    pipewire-pulse \
     openssh-server
 
 bash limits.sh
