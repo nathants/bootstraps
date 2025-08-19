@@ -51,6 +51,9 @@ sudo apt install -y \
     pipewire-bin \
     pulseaudio-utils \
     pipewire-pulse \
+    tree \
+    git-lfs \
+    clangd \
     openssh-server
 
 bash limits.sh
