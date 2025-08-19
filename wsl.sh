@@ -37,6 +37,8 @@ sudo apt install -y \
     wget \
     wireguard-tools \
     zip \
+    expect \
+    jq \
     openssh-server
 
 bash limits.sh
