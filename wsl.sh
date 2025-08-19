@@ -49,6 +49,9 @@ chmod 600 ~/.ssh/authorized_keys
 
 sudo systemctl enable --now ssh
 
+sudo rm -f /etc/profile.d/70-systemd-shell-extra.sh
+sudo rm -f /etc/profile.d/80-systemd-osc-context.sh
+
 ip=$(hostname -I | awk '{print $1}')
 
 cat << EOF
