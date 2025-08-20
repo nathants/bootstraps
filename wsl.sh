@@ -54,6 +54,7 @@ sudo apt install -y \
     tree \
     git-lfs \
     clangd \
+    htop \
     openssh-server
 
 bash limits.sh
