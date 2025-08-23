@@ -15,6 +15,8 @@ sudo apt install -y \
     emacs-nox \
     vim \
     clang \
+    clang-format \
+    clang-tidy \
     cmake \
     bash-completion \
     gcc \
