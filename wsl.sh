@@ -3,6 +3,9 @@ set -xeou pipefail
 
 cd $(dirname $0)
 
+echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
+sudo chmod 440 /etc/sudoers.d/$USER
+
 sudo tee /etc/apt/sources.list > /dev/null << 'EOF'
 deb http://deb.debian.org/debian/ sid main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian/ sid main contrib non-free non-free-firmware
