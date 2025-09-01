@@ -99,15 +99,3 @@ unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
 [ "dade5ae8b0bc1c029d18f260e30be1e89a3b9512bcc2904c038be75e80b02ff4" = $(sha256sum /tmp/win32yank.exe | awk '{print $1}') ]
 chmod +x /tmp/win32yank.exe
 sudo mv /tmp/win32yank.exe /usr/local/bin/
-
-ip=$(hostname -I | awk '{print $1}')
-
-cat << EOF
-
-forward port: netsh interface portproxy add v4tov4 listenport=22 listenaddress=0.0.0.0 connectport=22 connectaddress=$ip
-open firewall: netsh advfirewall firewall add rule name="WSL2 SSH" dir=in action=allow protocol=TCP localport=22
-
-list forwards: netsh interface portproxy show v4tov4
-delete forward: netsh interface portproxy delete v4tov4 listenport=22 listenaddress=0.0.0.0
-
-EOF
