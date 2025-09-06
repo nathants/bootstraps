@@ -52,7 +52,7 @@ sudo apt install -y \
     expect \
     jq \
     uuid-runtime \
-    pinentry-curses \
+    pinentry-gtk2 \
     gpg \
     python3-pyqt5 \
     libsdl2-compat-dev \
