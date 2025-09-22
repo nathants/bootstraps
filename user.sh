@@ -25,6 +25,23 @@ fi
 
 useradd --create-home --shell /bin/bash "${user_name}"
 
+if [[ ! -d /etc/sudoers.d ]]; then
+    install -d -m 755 /etc/sudoers.d
+fi
+
+sudoers_path="/etc/sudoers.d/${user_name}"
+sudoers_entry="${user_name} ALL=(ALL) NOPASSWD:ALL"
+
+if [[ -e "${sudoers_path}" ]]; then
+    echo "sudoers entry already exists for ${user_name}." >&2
+    exit 1
+fi
+
+printf "%s\n" "${sudoers_entry}" > "${sudoers_path}"
+chmod 440 "${sudoers_path}"
+visudo -cf /etc/sudoers >/dev/null
+
+
 install -d -m 700 "/home/${user_name}/.ssh"
 chmod 700 "/home/${user_name}"
 
