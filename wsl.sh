@@ -22,57 +22,58 @@ sudo apt update
 sudo apt upgrade -y
 
 sudo apt install -y \
-    emacs-nox \
-    vim \
+    bash-completion \
+    bsdmainutils \
     clang \
     clang-format \
     clang-tidy \
+    clangd \
     cmake \
-    bash-completion \
+    containerd.io \
+    curl \
+    docker-buildx-plugin \
+    docker-ce \
+    docker-ce-cli \
+    docker-compose-plugin \
+    emacs-nox \
+    expect \
     gcc \
     gdb \
+    git-lfs \
     golang \
-    libsodium-dev \
+    gpg \
+    htop \
+    jq \
+    libgoogle-perftools-dev \
     liblz4-dev \
+    libpipewire-0.3-dev \
+    libsdl2-compat-dev \
+    libsndfile1-dev \
+    libsodium-dev \
+    libyaml-cpp-dev \
     lldb \
     make \
     mold \
     npm \
+    openssh-server \
+    pinentry-gtk2 \
+    pipewire-bin \
+    pipewire-pulse \
     pkg-config \
+    pulseaudio-utils \
+    python3-pyqt5 \
     python3-virtualenv \
-    rsync \
     ripgrep \
+    rsync \
     silversearcher-ag \
     tmux \
+    tree \
     unzip \
-    curl \
+    uuid-runtime \
+    vim \
     wget \
     wireguard-tools \
-    zip \
-    expect \
-    jq \
-    uuid-runtime \
-    pinentry-gtk2 \
-    gpg \
-    python3-pyqt5 \
-    libsdl2-compat-dev \
-    libsndfile1-dev \
-    libyaml-cpp-dev \
-    libgoogle-perftools-dev \
-    libpipewire-0.3-dev \
-    pipewire-bin \
-    pulseaudio-utils \
-    pipewire-pulse \
-    tree \
-    git-lfs \
-    clangd \
-    htop \
-    openssh-server \
-    docker-ce \
-    docker-ce-cli \
-    containerd.io \
-    docker-buildx-plugin \
-    docker-compose-plugin
+    zip
 
 sudo groupadd -f docker
 sudo usermod -aG docker $USER
