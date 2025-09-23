@@ -54,6 +54,7 @@ sudo apt install -y \
     lldb \
     make \
     mold \
+    net-tools \
     npm \
     openssh-server \
     pinentry-gtk2 \
